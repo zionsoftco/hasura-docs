@@ -15,6 +15,7 @@ Este es un Repo enfocado a desarrollar el curso de Udemy de Dmytro para Hasura G
     - [Paginación en Hasura](#paginación-en-hasura)
     - [Relaciones entre tablas](#relaciones-entre-tablas)
     - [Mutations, creando un item](#mutations-creando-un-item)
+    - [Mutations, update items](#mutations-update-items)
 
 ## Correr Hasura
 
@@ -205,8 +206,8 @@ En el Dashboard, tenemos en la parte de abajo del explorer un selector `ADD NEW`
 
 ![Imagen de mutation en forma de array](assets/img-013.png)
 
-- __NOTA!__ Existe un caso particular muy útil en el que podemos usar la mutation de insert para modificar alguna id existente.
-- d. Si lo quisiáremos hacer de manera normal, obtendríamos como resultado un conflicto por constraint-violation, como se muestra en la siguiente imagen:
+- __NOTA!__ Existe un caso particular muy útil en el que podemos usar la _mutation_ de _insert_ para modificar alguna `id` existente.
+- d. Si lo quisiéramos hacer de manera normal, obtendríamos como resultado un conflicto por `constraint-violation`, como se muestra en la siguiente imagen:
 
 ![Imagen con constraint-violation](assets/img-014.png)
 
@@ -214,6 +215,18 @@ En el Dashboard, tenemos en la parte de abajo del explorer un selector `ADD NEW`
 
 ![Imagen con on_conflict activado](assets/img-015.png)
 
-- f. Si quiéramos que el absort, nos permitiera lograr editar más de un row, es posible envolviendo el operador update_column en un array:
+- f. Si quiéramos que el _absort_, nos permitiera lograr editar más de un _row_, es posible envolviendo el operador *update_column* en un array:
 
 ![Imagen con update_column como array](assets/img-016.png)
+
+### Mutations, update items
+
+Hasura nos trae una manera de hacer _update_, y esto lo hace creando los métodos necesarios para que los tengamos disponibles desde que se crean las tablas y relaciones.
+
+- a. El operador básico para hacer esto es *update_by_pk* que nos pide como valor requerido el `id` y los rows que deseemos afectar, como se muestra en la siguiente imagen:
+
+![Imagen para actualizar fields](assets/img-017.png)
+
+- b. Existe otro operador creado por Hasura llamado _update_ que nos permite hacer updates basado en _diferentes variable_, en la siguiente imagen se hace un ejemplo donde elegimos actualizar el field description para las fotos creadas después de una fecha dada:
+
+![Imagen actualizando la descripción de varias fotos al mismo tiempo](assets/img-018.png)
