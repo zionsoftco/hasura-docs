@@ -16,6 +16,8 @@ Este es un Repo enfocado a desarrollar el curso de Udemy de Dmytro para Hasura G
     - [Relaciones entre tablas](#relaciones-entre-tablas)
     - [Mutations, creando un item](#mutations-creando-un-item)
     - [Mutations, update items](#mutations-update-items)
+    - [Mutations, eliminando items](#mutations-eliminando-items)
+    - [Mutations, mutando items con relaciones](#mutations-mutando-items-con-relaciones)
 
 ## Correr Hasura
 
@@ -230,3 +232,13 @@ Hasura nos trae una manera de hacer _update_, y esto lo hace creando los método
 - b. Existe otro operador creado por Hasura llamado _update_ que nos permite hacer updates basado en _diferentes variable_, en la siguiente imagen se hace un ejemplo donde elegimos actualizar el field description para las fotos creadas después de una fecha dada:
 
 ![Imagen actualizando la descripción de varias fotos al mismo tiempo](assets/img-018.png)
+
+### Mutations, eliminando items
+
+Para esta sección, se puede tomar toda la información brindada en update, ya que la funcionalidad es la misma, existen dos métodos que Hasura nos da: *delete_by_pk* y _delete_ (que lo hace de manera condicional y puede hacerlo de manera múltiple en una sola instrucción).
+
+### Mutations, mutando items con relaciones
+
+De la misma manera que las mutations usadas para crear photos, podemos incluir dentro de la misma el operador para agregar un comentario, como se muestra en la siguiente imagen:
+
+![Imagen creando photo con comment](assets/img-019.png)
