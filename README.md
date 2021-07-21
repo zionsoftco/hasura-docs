@@ -14,6 +14,7 @@ Este es un Repo enfocado a desarrollar el curso de Udemy de Dmytro para Hasura G
     - [Combinando múltiples filtros](#combinando-múltiples-filtros)
     - [Paginación en Hasura](#paginación-en-hasura)
     - [Relaciones entre tablas](#relaciones-entre-tablas)
+    - [Mutations, creando un item](#mutations-creando-un-item)
 
 ## Correr Hasura
 
@@ -154,7 +155,7 @@ query GetPhotos {
 
 ### Paginación en Hasura
 
-- Para hacer la paginación, Hasura nos ofrece los operadores limit y offset, dónde limit se encarga de definir la cantidad másxima de elementos que va a devolver la Query y offset nos permite "saltar" la cantidad de valores que deseemos, por ejemplo:
+- Para hacer la paginación, Hasura nos ofrece los operadores limit y offset, dónde limit se encarga de definir la cantidad máxima de elementos que va a devolver la Query y offset nos permite "saltar" la cantidad de valores que deseemos, por ejemplo:
 
 ```gql
 photos(limit: 2, offset: 2)
@@ -187,3 +188,32 @@ Ahora, es necesario que antes de poder trabajar con las Queries de GraphQL, haga
 - Ahora es momento de crear algunos comentarios para las diferentes photos. __NOTA!__ Recuerda hacer una Query para traer los elementos de photos y poder tomar sus id y así hacer los comments.
 - __NOTA!__ Ahora que ya tenemos dos tablas y están relacionadas entre sí, podemos hacer uso del TAB Voyager, que nos sirve para ver gráficamente cómo están hechas las relaciones de nuestra base de datos.
 - __NOTA!__ Otra cosa a la que podemos acceder es al TAB Analyze, que nos permite ver las sentencias de SQL realizadas para obtener los datos en GraphiQL al hacer una Query. Una herramienta bastante útil para entender cómo se están haciendo las consultas con el lenguaje de SQL.
+
+### Mutations, creando un item
+
+En el Dashboard, tenemos en la parte de abajo del explorer un selector `ADD NEW` que nos permite agregar una nuava `Query`, `Mutation` o `Subscription`. Elegimos Mutation para los ejemplos que vienen a continuación:
+
+- a. Elegimos agregar mutation, podemos cambiar el nombre que nos dan por default:
+
+![Imagen agregar mutation](assets/img-011.png)
+
+- b. Para insertar múltiples fotos, podemos usar el operador *insert_photos*, el cual nos permite hacer armar un array de _objects_, como podemos observar en returning, nos está devolviendo un array de objects:
+
+![Imagen con returning en forma de array](assets/img-012.png)
+
+- c. Lo que nos deja ver que en la mutation, podemos crear un objects con un array de objects en vez de un siempl object:
+
+![Imagen de mutation en forma de array](assets/img-013.png)
+
+- __NOTA!__ Existe un caso particular muy útil en el que podemos usar la mutation de insert para modificar alguna id existente.
+- d. Si lo quisiáremos hacer de manera normal, obtendríamos como resultado un conflicto por constraint-violation, como se muestra en la siguiente imagen:
+
+![Imagen con constraint-violation](assets/img-014.png)
+
+- e. Pero existe un método llamado _absort_ en Hasura, que nos da la oportunidad de que en caso de _conflicto_, la _insertion_ haga un _update_, y este por default, Hasura lo integra como un string:
+
+![Imagen con on_conflict activado](assets/img-015.png)
+
+- f. Si quiéramos que el absort, nos permitiera lograr editar más de un row, es posible envolviendo el operador update_column en un array:
+
+![Imagen con update_column como array](assets/img-016.png)
