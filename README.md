@@ -22,6 +22,7 @@ Este es un Repo enfocado a desarrollar el curso de Udemy de Dmytro para Hasura G
     - [Subscriptions, queries en tiempo real](#subscriptions-queries-en-tiempo-real)
   - [Extendiendo la lógica de negocios que ofrece Hasura](#extendiendo-la-lógica-de-negocios-que-ofrece-hasura)
     - [Configurando las Firebase Cloud Functions](#configurando-las-firebase-cloud-functions)
+    - [Hasura, Event Triggers](#hasura-event-triggers)
 
 ## Correr Hasura
 
@@ -284,6 +285,9 @@ Estaremos viendo los pasos para tener configurada una app de Firebase con Cloud 
 - Hacemos login a Firebase desde nuestro local `firebase login`
 - Creamos un proyecto en nuestro local (dentro de nuestro folder del proyecto) `firebase init`
   - Elegimos las dos opciones de la imagen: Functions y Storage (con la barra espaciadora a ambos) y ENTER
+
+![Imagen de la sleccion de Functions y Storage](assets/img-022.png)
+
   - Usamos un proyecto existente y elegimos el que creamos en los pasos anteriores
   - Elegimos el lenguaje que queremos para nuestro proyecto (para este elegiremos TypeScript)
   - Seleccionamos que nos cree las reglas de ESLint necesarias
@@ -294,3 +298,25 @@ Estaremos viendo los pasos para tener configurada una app de Firebase con Cloud 
 - En la Terminal, corremos `firebase deploy --only functions`
 - Listo! Una vez finalizado el deploy, podemos entrar a la url que nos generar y comprobar que efectivamente está el mensaje default que enviamos por Firebase Functions
 - __NOTA!__ Puede que al entrar al index.ts de src les mande un error el import y en el .eslintrc.js el module.exports también, puede ser de utilidad la información de este [LINK](https://stackoverflow.com/a/64940811/7990582)
+
+### Hasura, Event Triggers
+
+Es hora de preparar el Event Trigger para cuando se realice un comentario a alguna de las fotos que se han subido:
+
+- En el Dashboard de Hasura -> Events -> Event Trigger (Create), llenamos los campos acorde a lo que deseamos realizar, pero, antes, para que el ejemplo lo podamos llevar a cabo en nuestro local, vamos a servir el proyecto en nuestro local: nos movemos al folder functions en la Terminal y corremos `npm run serve`, una vez ejecutado, obtenemos la url que nos genera en nuestro local:
+
+![Imagen del servidor local de Firebase Functions](assets/img-023.png)
+
+- Ahora si, llenamos los inputs de Hasura Events, se muestra un ejemplo a continuación:
+
+![Imagen de Hasura Events con inputs](assets/img-024.png)
+
+- a. Ponemos el nombre de nuestro evento
+- b. Elegimos la tabla que queremos que active el evento
+- c. La operación que ejecutará el evento
+- d. Pegamos la URL que nos generó el servidor local, solo que hacemos algunas modificaciones, dejándolo de la siguiente manera: `http://host.docker.internal:5001/hasura-dmytro-project/us-central1/notifyAboutComment`
+  - Se realizaron dos cambios, el primero: cambiar el nombre de la función a la que vamos a crear en el siguiente punto de este tutorial
+  - El segundo: se cambió el `localhost` por `host.docker.internal`, ya que _Docker_ usa un _localhost_ diferente y la manera correcta de hacerlo es con el cambio implementado.
+- Listo! A continuación se muestra la pantalla una vez creado el Event Trigger:
+
+![Imagen Event Trigger creado](assets/img-025.png)
