@@ -19,6 +19,7 @@ Este es un Repo enfocado a desarrollar el curso de Udemy de Dmytro para Hasura G
     - [Mutations, eliminando items](#mutations-eliminando-items)
     - [Mutations, mutando items con relaciones](#mutations-mutando-items-con-relaciones)
     - [Mutations, usando variables](#mutations-usando-variables)
+    - [Subscriptions, queries en tiempo real](#subscriptions-queries-en-tiempo-real)
 
 ## Correr Hasura
 
@@ -253,3 +254,9 @@ Como es bien conocido en GraphQL, es posible darle dinamismo a las mutations a t
 - c. Ahora, para finalizar, toca el turno de incluir las variables, donde anteriormente hardcodeábamos los valores que deseábamos mandar en los operadores.
 
 ![Imagen con una mutation usando variables](assets/img-020.png)
+
+### Subscriptions, queries en tiempo real
+
+Hasura nos permite realizar esta función de forma fácil. Tomamos alguna de las _queries_ que tenemos previamente en el _historial_, por ejemplo la de `GetPhotos` en anteponemos en vez de `Query` la palabra reservada `Subscription`, listo! Ya tenemos nuestra subscription oyendo los cambios en _tiempo real_ de la información que modifiquemos.
+
+![Imagen con ejemplo de una subscription en ejecución](assets/img-021.png)
