@@ -18,6 +18,7 @@ Este es un Repo enfocado a desarrollar el curso de Udemy de Dmytro para Hasura G
     - [Mutations, update items](#mutations-update-items)
     - [Mutations, eliminando items](#mutations-eliminando-items)
     - [Mutations, mutando items con relaciones](#mutations-mutando-items-con-relaciones)
+    - [Mutations, usando variables](#mutations-usando-variables)
 
 ## Correr Hasura
 
@@ -242,3 +243,13 @@ Para esta sección, se puede tomar toda la información brindada en update, ya q
 De la misma manera que las mutations usadas para crear photos, podemos incluir dentro de la misma el operador para agregar un comentario, como se muestra en la siguiente imagen:
 
 ![Imagen creando photo con comment](assets/img-019.png)
+
+### Mutations, usando variables
+
+Como es bien conocido en GraphQL, es posible darle dinamismo a las mutations a través de las variables, esto lo podemos hacer de la siguiente manera:
+
+- a. Lo primero es definir en formato json nuestras variables a usar en la sección de abajo de GraphiQL en el Dashboar -> API
+- b. Lo siguiente a hacer es incluir las variables en el nombre de nuestra Mutation, añadiendo el tipo de variable a que corresponde (para saber el tipo de variables, podemos abrir la sección de Docs y elegir de la lista que nos extiende Hasura GraphiQL)
+- c. Ahora, para finalizar, toca el turno de incluir las variables, donde anteriormente hardcodeábamos los valores que deseábamos mandar en los operadores.
+
+![Imagen con una mutation usando variables](assets/img-020.png)
