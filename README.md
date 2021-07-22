@@ -20,6 +20,8 @@ Este es un Repo enfocado a desarrollar el curso de Udemy de Dmytro para Hasura G
     - [Mutations, mutando items con relaciones](#mutations-mutando-items-con-relaciones)
     - [Mutations, usando variables](#mutations-usando-variables)
     - [Subscriptions, queries en tiempo real](#subscriptions-queries-en-tiempo-real)
+  - [Extendiendo la lógica de negocios que ofrece Hasura](#extendiendo-la-lógica-de-negocios-que-ofrece-hasura)
+    - [Configurando las Firebase Cloud Functions](#configurando-las-firebase-cloud-functions)
 
 ## Correr Hasura
 
@@ -260,3 +262,35 @@ Como es bien conocido en GraphQL, es posible darle dinamismo a las mutations a t
 Hasura nos permite realizar esta función de forma fácil. Tomamos alguna de las _queries_ que tenemos previamente en el _historial_, por ejemplo la de `GetPhotos` en anteponemos en vez de `Query` la palabra reservada `Subscription`, listo! Ya tenemos nuestra subscription oyendo los cambios en _tiempo real_ de la información que modifiquemos.
 
 ![Imagen con ejemplo de una subscription en ejecución](assets/img-021.png)
+
+## Extendiendo la lógica de negocios que ofrece Hasura
+
+En esta sección se verá la manera de extender el set de funcionalidades básicas que ofrece Hasura, con herramientas como:
+
+- Event Triggers
+- Hasura Actions
+- Remote Schemes
+- Cloud Functions (Google Firebase)
+
+### Configurando las Firebase Cloud Functions
+
+Estaremos viendo los pasos para tener configurada una app de Firebase con Cloud Functions.
+
+- Accedemos al [Dashboard de Firebase](https://firebase.google.com)
+- Creamos un proyecto nuevo y lo nombramos (deshabilitamos las analíticas)
+- Ya dentro del Dashboard de nuestro proyecto, damos click a la sección de Functions -> Get Started
+- También activamos nuestro Storage en el Dashboard -> Storage -> Get Started, elegimos la ubicación de nuestro Cloud Storage y listo
+- Instalamos el set de tools de firebase `npm i -g firebase-tools`
+- Hacemos login a Firebase desde nuestro local `firebase login`
+- Creamos un proyecto en nuestro local (dentro de nuestro folder del proyecto) `firebase init`
+  - Elegimos las dos opciones de la imagen: Functions y Storage (con la barra espaciadora a ambos) y ENTER
+  - Usamos un proyecto existente y elegimos el que creamos en los pasos anteriores
+  - Elegimos el lenguaje que queremos para nuestro proyecto (para este elegiremos TypeScript)
+  - Seleccionamos que nos cree las reglas de ESLint necesarias
+  - Seleccionamos que nos instale las dependencias de npm
+  - Ahora (habiendo previamente activado el Storage en Firebase). te pedirá aplicar las reglas de Firebase Storage, elegimos las reglas que nos muestra por default
+  - Listo
+- Ahora en nuestro editor de código, entramos a la carpeta src y en index.ts podemos crear nuestra primera function. Podemos iniciar quitando los comments de la que viene por default
+- En la Terminal, corremos `firebase deploy --only functions`
+- Listo! Una vez finalizado el deploy, podemos entrar a la url que nos generar y comprobar que efectivamente está el mensaje default que enviamos por Firebase Functions
+- __NOTA!__ Puede que al entrar al index.ts de src les mande un error el import y en el .eslintrc.js el module.exports también, puede ser de utilidad la información de este [LINK](https://stackoverflow.com/a/64940811/7990582)
