@@ -23,6 +23,7 @@ Este es un Repo enfocado a desarrollar el curso de Udemy de Dmytro para Hasura G
   - [Extendiendo la lógica de negocios que ofrece Hasura](#extendiendo-la-lógica-de-negocios-que-ofrece-hasura)
     - [Configurando las Firebase Cloud Functions](#configurando-las-firebase-cloud-functions)
     - [Hasura, Event Triggers](#hasura-event-triggers)
+    - [Hasura, Event Triggers - Implement Event Logic](#hasura-event-triggers---implement-event-logic)
 
 ## Correr Hasura
 
@@ -320,3 +321,101 @@ Es hora de preparar el Event Trigger para cuando se realice un comentario a algu
 - Listo! A continuación se muestra la pantalla una vez creado el Event Trigger:
 
 ![Imagen Event Trigger creado](assets/img-025.png)
+
+### Hasura, Event Triggers - Implement Event Logic
+
+Iniciamos instalando algunas dependencias necesarias para enviar mail al momento de recibir el evento de que un comentario fue agregado.
+
+- Instalamos `npm install node-fetch nodemailer @types/node-fetch @types/nodemailer`
+- Creamos nuestra función, se adjunta un ejemplo de cómo se modifico la existente de Hello World:
+
+```ts
+import * as functions from 'firebase-functions';
+
+export const notifyAboutComment = functions.https.onRequest((request, response) => {
+  functions.logger.info('Request body', request.body);
+  response.send('Hello from Firebase!');
+});
+```
+
+- Volvemos a correr la función de firebase `npm run serve`
+- Nos movemos al Dashboard de Hasura y creamos un comment a alguna de las fotos
+- Verificamos en el TAB Events -> Logs que el evento se haya invocado y podemos ver los detalles del request y la respuesta
+- Ahora vamos a modificar nuestra function, se deja el código ejemplo para recibir un email cuando se agregue un comment a alguna de las fotos:
+
+```ts
+// Dependencies
+import * as functions from 'firebase-functions';
+import fetch from 'node-fetch';
+import { createTestAccount, createTransport, getTestMessageUrl } from 'nodemailer';
+
+const GET_PHOTO_QUERY = `
+  query GetPhotoById($id: uuid!) {
+    photos_by_pk(id: $id) {
+      photo_url
+      description
+    }
+  }
+`;
+
+export const notifyAboutComment = functions.https.onRequest(
+  async (request, response) => {
+    try {
+      const { event } = request.body;
+      const { photo_id, comment } = event?.data?.new;
+      const { session_variables } = event;
+
+      const photoInfoQuery = await fetch('http://localhost:8080/v1/graphql', {
+        method: 'POST',
+        body: JSON.stringify({
+          query: GET_PHOTO_QUERY,
+          variables: { id: photo_id }
+        }),
+        headers: { ...session_variables, ...request.headers }
+      });
+
+      const {
+        data: {
+          photos_by_pk: {
+            photo_url,
+            description
+          }
+        }
+      } = await photoInfoQuery.json();
+
+      const testAccount = await createTestAccount();
+      const transporter = createTransport({
+        host: 'smtp.ethereal.email',
+        port: 587,
+        secure: false, // true for 465, false for other ports
+        auth: {
+          user: testAccount.user, // generated etheral user
+          pass: testAccount.pass // generated etheral pass
+        }
+      });
+
+      const sentEmail = await transporter.sendMail({
+        from: `"Firebase function" <${testAccount.user}>`,
+        to: 'rzarate.alex@gmail.com',
+        subject: 'New comment to the photo',
+        html: `
+          <html>
+            <head></head>
+            <body>
+              <h1>Hi there!</h1>
+              <br> <br>
+              <p>You have a new comment to your photo: <a href="${photo_url}">${description}</a></p>
+              <p>The comment text is: <i>${comment}</i></p>
+            </body>
+          </html>
+        `
+      })
+
+      functions.logger.log('getTestMessageUrl: ', getTestMessageUrl(sentEmail));
+
+      response.status(200).send({ message: 'success!' })
+    } catch (error) {
+      response.status(500).send({ message: `Message: ${error.message}` })
+    }
+});
+```
